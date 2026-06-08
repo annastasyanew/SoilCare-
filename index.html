@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoilCare Cabai - Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <a class="brand" href="#dashboard" data-section="dashboard" aria-label="SoilCare Cabai">
+      <img src="cabai.svg" alt="" class="brand-logo">
+      <span>SoilCare Cabai</span>
+    </a>
+
+    <button class="menu-toggle" type="button" aria-label="Buka menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="nav-menu" aria-label="Navigasi utama">
+      <a class="active" href="#dashboard" data-section="dashboard">Dashboard</a>
+      <a href="#monitoring" data-section="monitoring">Monitoring</a>
+      <a href="#grafik" data-section="grafik">Grafik</a>
+      <a href="#riwayat" data-section="riwayat">Riwayat</a>
+    </nav>
+
+    <div class="profile" aria-label="Profil pengguna">
+      <div class="profile-avatar">P</div>
+      <div>
+        <strong>Pengguna</strong>
+        <span>Pemilik Tanaman</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="view active" id="dashboard" data-title="Dashboard Monitoring">
+      <div class="page-heading">
+        <div>
+          <h1>Dashboard Monitoring</h1>
+          <p>Sistem monitoring kelembapan tanah tanaman cabai berbasis IoT</p>
+        </div>
+        <div class="online-badge"><span></span>Sistem Online</div>
+      </div>
+
+      <section class="summary-grid">
+        <article class="metric-card">
+          <div class="card-icon water-icon">%</div>
+          <div>
+            <h2>Kelembapan Tanah</h2>
+            <strong data-field="humidity">--%</strong>
+            <p data-field="updated">Update terakhir: --</p>
+            <small data-field="adc">ADC: --</small>
+          </div>
+        </article>
+
+        <article class="metric-card status-card">
+          <div class="card-icon soil-icon">~</div>
+          <div>
+            <h2>Status Tanah</h2>
+            <strong data-field="status">--</strong>
+            <p>Kondisi saat ini</p>
+          </div>
+        </article>
+
+        <article class="metric-card recommendation-card">
+          <div class="card-icon can-icon">+</div>
+          <div>
+            <h2>Rekomendasi</h2>
+            <strong data-field="recommendation">--</strong>
+            <p>Berdasarkan data saat ini</p>
+          </div>
+        </article>
+
+        <aside class="plant-card">
+          <div class="plant-visual">
+            <img src="cabai.svg" alt="Ilustrasi tanaman cabai dalam pot">
+          </div>
+          <div>
+            <h2>Tanaman Cabai</h2>
+            <p>Kondisi tanaman berdasarkan data kelembapan tanah</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="dashboard-grid">
+        <div class="dashboard-main">
+          <article class="panel">
+            <div class="panel-header">
+              <h2>Grafik Ringkas</h2>
+              <select aria-label="Periode grafik ringkas">
+                <option>24 Jam Terakhir</option>
+              </select>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="dashboardChart" aria-label="Grafik ringkas kelembapan tanah" role="img"></canvas>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <h2>Riwayat Ringkas</h2>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Waktu</th>
+                    <th>Kelembapan</th>
+                    <th>Status</th>
+                    <th>Rekomendasi</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboardHistory"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+
+        <aside class="panel category-panel">
+          <h2>Kategori Kelembapan</h2>
+          <div class="category-list" data-category-list></div>
+        </aside>
+      </section>
+    </section>
+
+    <section class="view" id="monitoring" data-title="Monitoring">
+      <div class="page-heading">
+        <div>
+          <h1>Monitoring</h1>
+          <p>Pantau kondisi kelembapan tanah tanaman cabai secara real-time</p>
+        </div>
+        <div class="online-badge"><span></span>Sistem Online</div>
+      </div>
+
+      <section class="summary-grid monitoring-summary">
+        <article class="metric-card">
+          <div class="card-icon water-icon">%</div>
+          <div>
+            <h2>Kelembapan Tanah</h2>
+            <strong data-field="humidity">--%</strong>
+            <p data-field="updated">Update terakhir: --</p>
+          </div>
+        </article>
+
+        <article class="metric-card status-card">
+          <div class="card-icon soil-icon">~</div>
+          <div>
+            <h2>Status Tanah</h2>
+            <strong data-field="status">--</strong>
+            <p>Kondisi saat ini</p>
+          </div>
+        </article>
+
+        <article class="metric-card recommendation-card">
+          <div class="card-icon can-icon">+</div>
+          <div>
+            <h2>Rekomendasi</h2>
+            <strong data-field="recommendation">--</strong>
+            <p>Berdasarkan data saat ini</p>
+          </div>
+        </article>
+
+        <aside class="plant-card compact-plant">
+          <div class="plant-visual">
+            <img src="cabai.svg" alt="Ilustrasi tanaman cabai dalam pot">
+          </div>
+          <div>
+            <h2>Tanaman Cabai</h2>
+            <p>Kondisi tanaman berdasarkan data kelembapan tanah</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="monitoring-grid">
+        <article class="panel gauge-panel">
+          <h2>Gauge Kelembapan</h2>
+          <div class="gauge" id="humidityGauge">
+            <div class="gauge-inner">
+              <strong data-field="humidity">--%</strong>
+              <span>Kelembapan Tanah</span>
+            </div>
+          </div>
+          <div class="gauge-scale">
+            <span>0</span>
+            <span>50</span>
+            <span>100</span>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h2>Statistik Sensor</h2>
+          <div class="table-wrap">
+            <table class="compact-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Nilai</th>
+                  <th>Keterangan</th>
+                </tr>
+              </thead>
+              <tbody id="sensorStats"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel device-panel">
+          <h2>Informasi Perangkat</h2>
+          <div class="device-list">
+            <div><span>ID Perangkat</span><strong data-field="device">--</strong></div>
+            <div><span>Status Perangkat</span><strong class="green-text">Aktif</strong></div>
+            <div><span>Koneksi</span><strong class="green-text">Terhubung</strong></div>
+            <div><span>Update Data</span><strong>1 menit</strong></div>
+          </div>
+        </article>
+
+        <article class="panel alert-panel" id="statusAlert">
+          <h2>Peringatan</h2>
+          <strong id="alertTitle">--</strong>
+          <p id="alertText">--</p>
+        </article>
+      </section>
+    </section>
+
+    <section class="view" id="grafik" data-title="Grafik">
+      <div class="page-heading">
+        <div>
+          <h1>Grafik</h1>
+          <p>Visualisasi perubahan kelembapan tanah tanaman cabai berdasarkan waktu</p>
+        </div>
+        <div class="online-badge"><span></span>Sistem Online</div>
+      </div>
+
+      <section class="graph-summary">
+        <article class="metric-card">
+          <div class="card-icon water-icon">%</div>
+          <div>
+            <h2>Kelembapan Saat Ini</h2>
+            <strong data-field="humidity">--%</strong>
+          </div>
+        </article>
+        <article class="metric-card">
+          <div class="card-icon leaf-icon">^</div>
+          <div>
+            <h2>Rata-rata Kelembapan</h2>
+            <strong id="averageCard">--%</strong>
+          </div>
+        </article>
+        <article class="metric-card status-card">
+          <div class="card-icon soil-icon">~</div>
+          <div>
+            <h2>Status Saat Ini</h2>
+            <strong data-field="status">--</strong>
+            <p id="statusHint">--</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="graph-layout">
+        <div class="graph-main">
+          <article class="panel">
+            <div class="panel-header">
+              <h2>Grafik Kelembapan Utama</h2>
+              <select aria-label="Periode grafik utama">
+                <option>24 Jam Terakhir</option>
+              </select>
+            </div>
+            <div class="chart-wrap chart-wrap-large">
+              <canvas id="mainChart" aria-label="Grafik utama kelembapan tanah" role="img"></canvas>
+            </div>
+          </article>
+
+          <article class="panel">
+            <h2>Ringkasan Grafik</h2>
+            <div class="summary-list" id="chartSummary"></div>
+          </article>
+        </div>
+
+        <aside class="graph-side">
+          <article class="panel category-panel">
+            <h2>Kategori Kelembapan</h2>
+            <div class="category-list" data-category-list></div>
+          </article>
+
+          <article class="panel interpretation-panel">
+            <h2>Interpretasi</h2>
+            <ul id="interpretationList"></ul>
+          </article>
+        </aside>
+      </section>
+    </section>
+
+    <section class="view" id="riwayat" data-title="Riwayat Data">
+      <div class="page-heading">
+        <div>
+          <h1>Riwayat Data</h1>
+          <p>Halaman ini menampilkan riwayat monitoring kelembapan tanah tanaman cabai.</p>
+        </div>
+        <div class="online-badge"><span></span>Sistem Online</div>
+      </div>
+
+      <section class="history-summary">
+        <article class="metric-card">
+          <div class="card-icon leaf-icon">#</div>
+          <div>
+            <h2>Total Data Hari Ini</h2>
+            <strong id="totalData">--</strong>
+            <p>Data tercatat</p>
+          </div>
+        </article>
+        <article class="metric-card">
+          <div class="card-icon water-icon">%</div>
+          <div>
+            <h2>Pembacaan Terakhir</h2>
+            <strong id="lastReading">--%</strong>
+            <p id="lastReadingTime">Hari ini, --</p>
+          </div>
+        </article>
+        <article class="metric-card">
+          <div class="card-icon soil-icon">~</div>
+          <div>
+            <h2>Rata-rata Kelembapan</h2>
+            <strong id="historyAverage">--%</strong>
+            <p>24 jam terakhir</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="history-layout">
+        <article class="panel history-table-panel">
+          <div class="panel-header">
+            <h2>Tabel Riwayat Monitoring</h2>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>ADC</th>
+                  <th>Kelembapan (%)</th>
+                  <th>Status</th>
+                  <th>Rekomendasi</th>
+                </tr>
+              </thead>
+              <tbody id="historyTable"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <aside class="history-side">
+          <article class="panel filter-panel">
+            <h2>Filter Ringkas</h2>
+            <label>
+              Periode
+              <select>
+                <option>24 Jam Terakhir</option>
+              </select>
+            </label>
+            <label>
+              Status
+              <select>
+                <option>Semua Status</option>
+                <option>Kering</option>
+                <option>Normal</option>
+                <option>Terlalu basah</option>
+              </select>
+            </label>
+            <button type="button">Terapkan Filter</button>
+          </article>
+
+          <article class="panel">
+            <h2>Ringkasan Riwayat</h2>
+            <div class="summary-list compact-summary" id="historySummary"></div>
+          </article>
+        </aside>
+      </section>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-brand">
+      <img src="cabai.svg" alt="" class="footer-logo">
+      <div>
+        <strong>SoilCare Cabai</strong>
+        <p>Sistem Monitoring Kelembapan Tanah dan Rekomendasi Penyiraman Manual pada Tanaman Cabai Berbasis IoT</p>
+      </div>
+    </div>
+    <span>Prototype dashboard monitoring kelembapan tanah</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

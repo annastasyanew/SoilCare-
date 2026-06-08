@@ -1,0 +1,150 @@
+<svg width="900" height="900" viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Ilustrasi 3D Tanaman Cabai</title>
+  <desc id="desc">Ilustrasi vektor tanaman cabai dalam pot dengan gaya 3D sederhana untuk UI SoilCare Cabai.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#f8fff7"/>
+      <stop offset="60%" stop-color="#e9f7e7"/>
+      <stop offset="100%" stop-color="#d8efd3"/>
+    </radialGradient>
+    <linearGradient id="potGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d9772f"/>
+      <stop offset="45%" stop-color="#b85522"/>
+      <stop offset="100%" stop-color="#7b3217"/>
+    </linearGradient>
+    <linearGradient id="rimGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f1a35b"/>
+      <stop offset="45%" stop-color="#c76127"/>
+      <stop offset="100%" stop-color="#873617"/>
+    </linearGradient>
+    <radialGradient id="soilGrad" cx="45%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#5b341d"/>
+      <stop offset="70%" stop-color="#2e1a10"/>
+      <stop offset="100%" stop-color="#1a0d08"/>
+    </radialGradient>
+    <linearGradient id="stemGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2f8b3a"/>
+      <stop offset="50%" stop-color="#60b247"/>
+      <stop offset="100%" stop-color="#1d6f32"/>
+    </linearGradient>
+    <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#9be36f"/>
+      <stop offset="55%" stop-color="#42a942"/>
+      <stop offset="100%" stop-color="#1d6b31"/>
+    </linearGradient>
+    <linearGradient id="leafDark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#77cd56"/>
+      <stop offset="100%" stop-color="#155c2b"/>
+    </linearGradient>
+    <linearGradient id="chiliGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff5a3d"/>
+      <stop offset="45%" stop-color="#d71919"/>
+      <stop offset="100%" stop-color="#8e0808"/>
+    </linearGradient>
+    <linearGradient id="chiliHi" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="14" flood-color="#1b4d24" flood-opacity="0.18"/>
+    </filter>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#000" flood-opacity="0.18"/>
+    </filter>
+    <filter id="leafShadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="3" dy="7" stdDeviation="4" flood-color="#0d3d19" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+
+  <rect width="900" height="900" rx="48" fill="url(#bg)"/>
+  <ellipse cx="450" cy="790" rx="250" ry="55" fill="#4b7f37" opacity="0.16"/>
+
+  <!-- pot -->
+  <g filter="url(#shadow)">
+    <ellipse cx="450" cy="620" rx="185" ry="52" fill="url(#rimGrad)"/>
+    <ellipse cx="450" cy="613" rx="158" ry="35" fill="url(#soilGrad)"/>
+    <path d="M275 622 C300 740 326 805 357 825 C410 858 491 859 543 825 C574 805 601 740 625 622 Z" fill="url(#potGrad)"/>
+    <path d="M303 648 C355 680 545 680 597 648 C590 701 570 784 537 811 C493 842 408 841 363 811 C331 785 310 702 303 648 Z" fill="#a9471e" opacity="0.55"/>
+    <path d="M324 651 C380 672 521 672 577 651" fill="none" stroke="#f0a15a" stroke-width="8" stroke-linecap="round" opacity="0.55"/>
+    <path d="M358 687 C385 702 516 705 546 687" fill="none" stroke="#6e2912" stroke-width="7" opacity="0.35"/>
+  </g>
+
+  <!-- stems -->
+  <g fill="none" stroke="url(#stemGrad)" stroke-linecap="round" stroke-linejoin="round" filter="url(#softShadow)">
+    <path d="M450 606 C448 505 448 395 450 255" stroke-width="16"/>
+    <path d="M448 515 C405 463 355 438 300 411" stroke-width="11"/>
+    <path d="M452 500 C500 452 560 420 618 380" stroke-width="11"/>
+    <path d="M450 430 C408 382 368 339 333 286" stroke-width="10"/>
+    <path d="M452 425 C498 378 538 324 575 270" stroke-width="10"/>
+    <path d="M450 345 C414 313 385 272 365 222" stroke-width="9"/>
+    <path d="M452 350 C500 316 529 270 554 215" stroke-width="9"/>
+    <path d="M450 285 C454 248 458 214 466 180" stroke-width="8"/>
+  </g>
+
+  <!-- leaves helper: path leaves rotated -->
+  <g filter="url(#leafShadow)">
+    <path d="M300 400 C230 365 210 300 236 260 C300 260 350 306 355 372 C337 391 320 400 300 400 Z" fill="url(#leafGrad)"/>
+    <path d="M295 388 C270 342 255 302 238 263" stroke="#e1ffd2" stroke-width="4" opacity="0.45" fill="none"/>
+    <path d="M248 325 C278 328 310 348 340 374" stroke="#1e7a31" stroke-width="3" opacity="0.5" fill="none"/>
+
+    <path d="M358 292 C288 277 245 222 258 174 C322 160 384 193 407 255 C395 277 379 289 358 292 Z" fill="url(#leafGrad)"/>
+    <path d="M355 281 C323 243 292 210 260 176" stroke="#e1ffd2" stroke-width="4" opacity="0.45" fill="none"/>
+
+    <path d="M366 225 C302 205 271 151 291 108 C349 102 402 139 416 194 C401 214 385 224 366 225 Z" fill="url(#leafDark)"/>
+    <path d="M364 216 C335 181 313 146 292 109" stroke="#dcffd0" stroke-width="3.5" opacity="0.42" fill="none"/>
+
+    <path d="M618 380 C690 345 714 282 690 240 C627 237 575 282 566 347 C582 369 599 380 618 380 Z" fill="url(#leafGrad)"/>
+    <path d="M621 368 C650 324 669 284 688 242" stroke="#e1ffd2" stroke-width="4" opacity="0.45" fill="none"/>
+    <path d="M671 304 C640 309 607 329 576 352" stroke="#1e7a31" stroke-width="3" opacity="0.5" fill="none"/>
+
+    <path d="M575 270 C646 257 691 204 680 156 C616 140 553 171 528 232 C539 255 554 268 575 270 Z" fill="url(#leafGrad)"/>
+    <path d="M578 260 C612 223 645 191 678 158" stroke="#e1ffd2" stroke-width="4" opacity="0.45" fill="none"/>
+
+    <path d="M554 215 C618 190 645 133 622 92 C564 91 514 132 504 188 C521 207 535 215 554 215 Z" fill="url(#leafDark)"/>
+    <path d="M552 206 C578 168 600 130 621 94" stroke="#dcffd0" stroke-width="3.5" opacity="0.42" fill="none"/>
+
+    <path d="M466 180 C418 139 411 80 444 48 C494 65 522 117 505 166 C491 179 479 183 466 180 Z" fill="url(#leafGrad)"/>
+    <path d="M468 171 C460 132 453 91 445 50" stroke="#e1ffd2" stroke-width="3.5" opacity="0.45" fill="none"/>
+
+    <path d="M409 468 C346 438 292 454 273 498 C307 548 372 556 421 516 C424 496 420 480 409 468 Z" fill="url(#leafGrad)"/>
+    <path d="M398 474 C360 482 320 490 276 499" stroke="#e1ffd2" stroke-width="4" opacity="0.45" fill="none"/>
+
+    <path d="M508 466 C574 435 629 451 650 492 C619 544 552 556 503 518 C499 496 500 480 508 466 Z" fill="url(#leafGrad)"/>
+    <path d="M519 472 C558 481 604 488 648 493" stroke="#e1ffd2" stroke-width="4" opacity="0.45" fill="none"/>
+
+    <path d="M450 340 C407 327 385 285 400 248 C443 241 484 265 493 307 C483 329 467 339 450 340 Z" fill="url(#leafGrad)" opacity="0.95"/>
+    <path d="M452 332 C434 301 417 274 401 249" stroke="#e1ffd2" stroke-width="3.5" opacity="0.45" fill="none"/>
+  </g>
+
+  <!-- chilies -->
+  <g filter="url(#softShadow)">
+    <path d="M310 432 C286 451 288 500 315 543 C343 516 352 472 335 436 C328 423 318 423 310 432 Z" fill="url(#chiliGrad)"/>
+    <path d="M318 435 C306 456 310 492 328 517" stroke="url(#chiliHi)" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <path d="M319 429 C322 417 332 409 344 405" stroke="#2d8a37" stroke-width="8" stroke-linecap="round" fill="none"/>
+
+    <path d="M602 394 C632 408 642 456 624 506 C589 485 571 445 580 407 C584 393 594 389 602 394 Z" fill="url(#chiliGrad)"/>
+    <path d="M598 403 C614 423 620 459 612 489" stroke="url(#chiliHi)" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <path d="M595 391 C590 380 580 374 567 372" stroke="#2d8a37" stroke-width="8" stroke-linecap="round" fill="none"/>
+
+    <path d="M380 292 C351 309 347 358 370 405 C402 381 416 337 402 300 C397 286 388 286 380 292 Z" fill="url(#chiliGrad)"/>
+    <path d="M386 296 C372 318 374 354 390 382" stroke="url(#chiliHi)" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <path d="M389 288 C392 276 403 268 415 266" stroke="#2d8a37" stroke-width="8" stroke-linecap="round" fill="none"/>
+
+    <path d="M535 300 C562 318 563 369 538 413 C508 386 498 342 514 306 C520 293 528 293 535 300 Z" fill="url(#chiliGrad)"/>
+    <path d="M530 306 C543 329 540 365 522 391" stroke="url(#chiliHi)" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <path d="M526 294 C523 282 512 275 500 273" stroke="#2d8a37" stroke-width="8" stroke-linecap="round" fill="none"/>
+
+    <path d="M472 205 C493 225 489 270 462 305 C438 279 435 239 454 211 C461 200 467 199 472 205 Z" fill="url(#chiliGrad)"/>
+    <path d="M468 211 C475 232 470 260 454 284" stroke="url(#chiliHi)" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <path d="M464 201 C460 190 452 185 441 182" stroke="#2d8a37" stroke-width="7" stroke-linecap="round" fill="none"/>
+
+    <path d="M512 538 C542 553 551 598 533 640 C500 617 487 577 496 545 C500 534 506 534 512 538 Z" fill="url(#chiliGrad)"/>
+    <path d="M510 546 C523 565 524 594 516 621" stroke="url(#chiliHi)" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M508 533 C502 521 491 516 478 515" stroke="#2d8a37" stroke-width="7" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- highlights -->
+  <circle cx="330" cy="115" r="9" fill="#ffffff" opacity="0.6"/>
+  <circle cx="642" cy="170" r="7" fill="#ffffff" opacity="0.5"/>
+  <circle cx="260" cy="520" r="6" fill="#ffffff" opacity="0.45"/>
+</svg>
