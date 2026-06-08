@@ -1,0 +1,221 @@
+{
+    "latest":  {
+                   "moisture":  62,
+                   "status":  "Normal",
+                   "recommendation":  "Tidak perlu menyiram",
+                   "timestamp":  "2026-06-08 09:29:00",
+                   "adc_value":  2300
+               },
+    "readings":  {
+                     "dummy001":  {
+                                      "moisture":  58,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:00:00",
+                                      "adc_value":  2416
+                                  },
+                     "dummy002":  {
+                                      "moisture":  56,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:01:00",
+                                      "adc_value":  2474
+                                  },
+                     "dummy003":  {
+                                      "moisture":  54,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:02:00",
+                                      "adc_value":  2532
+                                  },
+                     "dummy004":  {
+                                      "moisture":  52,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:03:00",
+                                      "adc_value":  2590
+                                  },
+                     "dummy005":  {
+                                      "moisture":  50,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:04:00",
+                                      "adc_value":  2648
+                                  },
+                     "dummy006":  {
+                                      "moisture":  48,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:05:00",
+                                      "adc_value":  2705
+                                  },
+                     "dummy007":  {
+                                      "moisture":  46,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:06:00",
+                                      "adc_value":  2763
+                                  },
+                     "dummy008":  {
+                                      "moisture":  44,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:07:00",
+                                      "adc_value":  2821
+                                  },
+                     "dummy009":  {
+                                      "moisture":  42,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:08:00",
+                                      "adc_value":  2879
+                                  },
+                     "dummy010":  {
+                                      "moisture":  40,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:09:00",
+                                      "adc_value":  2937
+                                  },
+                     "dummy011":  {
+                                      "moisture":  38,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:10:00",
+                                      "adc_value":  2995
+                                  },
+                     "dummy012":  {
+                                      "moisture":  36,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:11:00",
+                                      "adc_value":  3053
+                                  },
+                     "dummy013":  {
+                                      "moisture":  34,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:12:00",
+                                      "adc_value":  3111
+                                  },
+                     "dummy014":  {
+                                      "moisture":  32,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:13:00",
+                                      "adc_value":  3169
+                                  },
+                     "dummy015":  {
+                                      "moisture":  30,
+                                      "status":  "Kering",
+                                      "recommendation":  "Siram tanaman secara manual",
+                                      "timestamp":  "2026-06-08 09:14:00",
+                                      "adc_value":  3226
+                                  },
+                     "dummy016":  {
+                                      "moisture":  29,
+                                      "status":  "Kering",
+                                      "recommendation":  "Siram tanaman secara manual",
+                                      "timestamp":  "2026-06-08 09:15:00",
+                                      "adc_value":  3255
+                                  },
+                     "dummy017":  {
+                                      "moisture":  28,
+                                      "status":  "Kering",
+                                      "recommendation":  "Siram tanaman secara manual",
+                                      "timestamp":  "2026-06-08 09:16:00",
+                                      "adc_value":  3284
+                                  },
+                     "dummy018":  {
+                                      "moisture":  27,
+                                      "status":  "Kering",
+                                      "recommendation":  "Siram tanaman secara manual",
+                                      "timestamp":  "2026-06-08 09:17:00",
+                                      "adc_value":  3313
+                                  },
+                     "dummy019":  {
+                                      "moisture":  26,
+                                      "status":  "Kering",
+                                      "recommendation":  "Siram tanaman secara manual",
+                                      "timestamp":  "2026-06-08 09:18:00",
+                                      "adc_value":  3342
+                                  },
+                     "dummy020":  {
+                                      "moisture":  25,
+                                      "status":  "Kering",
+                                      "recommendation":  "Siram tanaman secara manual",
+                                      "timestamp":  "2026-06-08 09:19:00",
+                                      "adc_value":  3371
+                                  },
+                     "dummy021":  {
+                                      "moisture":  72,
+                                      "status":  "Terlalu basah",
+                                      "recommendation":  "Hentikan penyiraman sementara",
+                                      "timestamp":  "2026-06-08 09:20:00",
+                                      "adc_value":  2011
+                                  },
+                     "dummy022":  {
+                                      "moisture":  78,
+                                      "status":  "Terlalu basah",
+                                      "recommendation":  "Hentikan penyiraman sementara",
+                                      "timestamp":  "2026-06-08 09:21:00",
+                                      "adc_value":  1837
+                                  },
+                     "dummy023":  {
+                                      "moisture":  82,
+                                      "status":  "Terlalu basah",
+                                      "recommendation":  "Hentikan penyiraman sementara",
+                                      "timestamp":  "2026-06-08 09:22:00",
+                                      "adc_value":  1721
+                                  },
+                     "dummy024":  {
+                                      "moisture":  76,
+                                      "status":  "Terlalu basah",
+                                      "recommendation":  "Hentikan penyiraman sementara",
+                                      "timestamp":  "2026-06-08 09:23:00",
+                                      "adc_value":  1895
+                                  },
+                     "dummy025":  {
+                                      "moisture":  70,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:24:00",
+                                      "adc_value":  2068
+                                  },
+                     "dummy026":  {
+                                      "moisture":  68,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:25:00",
+                                      "adc_value":  2126
+                                  },
+                     "dummy027":  {
+                                      "moisture":  66,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:26:00",
+                                      "adc_value":  2184
+                                  },
+                     "dummy028":  {
+                                      "moisture":  64,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:27:00",
+                                      "adc_value":  2242
+                                  },
+                     "dummy029":  {
+                                      "moisture":  63,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:28:00",
+                                      "adc_value":  2271
+                                  },
+                     "dummy030":  {
+                                      "moisture":  62,
+                                      "status":  "Normal",
+                                      "recommendation":  "Tidak perlu menyiram",
+                                      "timestamp":  "2026-06-08 09:29:00",
+                                      "adc_value":  2300
+                                  }
+                 }
+}
