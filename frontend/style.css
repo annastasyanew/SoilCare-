@@ -42,6 +42,41 @@ select {
   font: inherit;
 }
 
+input,
+button,
+select {
+  min-height: 44px;
+}
+
+button {
+  font: inherit;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 0 18px;
+  color: #ffffff;
+  background: var(--green-700);
+  cursor: pointer;
+  transition: transform 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+button:hover,
+button:focus-visible {
+  background: var(--green-600);
+  transform: translateY(-1px);
+}
+
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(9, 123, 63, 0.18);
+}
+
+input,
+select {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
 .navbar {
   position: sticky;
   top: 0;
@@ -81,22 +116,24 @@ select {
 
 .nav-menu a {
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  min-width: 112px;
+  gap: 10px;
+  min-width: 120px;
   justify-content: center;
-  padding: 0 18px;
+  padding: 0 20px;
   color: #2f3744;
   font-weight: 700;
 }
 
-.nav-menu a::before {
-  content: "";
-  width: 10px;
-  height: 10px;
-  margin-right: 9px;
-  border: 2px solid currentColor;
-  border-radius: 3px;
+.nav-menu a i {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.nav-menu a span {
+  display: inline-block;
 }
 
 .nav-menu a.active {
@@ -226,15 +263,35 @@ p {
 
 .panel,
 .metric-card,
-.plant-card {
+.plant-card,
+.status-card {
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 16px;
   background: var(--panel);
   box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  will-change: transform, box-shadow;
 }
 
-.panel {
+.panel,
+.status-card {
   padding: 22px;
+}
+
+.metric-card {
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+}
+
+.panel:hover,
+.metric-card:hover,
+.plant-card:hover,
+.status-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 45px rgba(16, 48, 26, 0.12);
 }
 
 .summary-grid {
@@ -283,6 +340,16 @@ p {
 .panel h2 {
   font-size: 18px;
   line-height: 1.3;
+}
+
+.panel h2.panel-title.has-icon::before {
+  display: none;
+}
+
+.panel h2.panel-title i {
+  font-size: 1rem;
+  color: var(--green-700);
+  margin-right: 10px;
 }
 
 .metric-card strong {
@@ -337,6 +404,124 @@ p {
 
 .plant-card h2 {
   color: var(--green-700);
+}
+
+.status-grid,
+.monitoring-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.status-card {
+  display: grid;
+  gap: 14px;
+}
+
+.status-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--green-700);
+}
+
+.status-dot.connected {
+  background: var(--blue-700);
+}
+
+.status-dot.firebase {
+  background: #0f7e68;
+}
+
+.status-dot.update {
+  background: var(--orange-700);
+}
+
+.status-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.monitoring-info-grid .panel {
+  min-height: 210px;
+}
+
+.info-list,
+.summary-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.info-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: #f7fbf5;
+  color: var(--ink);
+}
+
+.info-list span {
+  color: var(--muted);
+}
+
+.info-list strong {
+  color: var(--green-700);
+}
+
+.insight-panel p {
+  margin-top: 16px;
+  color: #344054;
+  line-height: 1.75;
+}
+
+.export-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.export-buttons button {
+  width: 100%;
+  min-height: 44px;
+}
+
+.filter-panel input {
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 14px;
+}
+
+.table-state {
+  padding: 20px 16px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.table-state {
+  width: 100%;
+  padding: 22px;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 700;
+  background: #f5f8f3;
+  border-radius: 12px;
+  margin-bottom: 14px;
 }
 
 .compact-plant {
@@ -429,9 +614,16 @@ table {
 
 th,
 td {
-  padding: 13px 18px;
+  padding: 14px 18px;
   text-align: left;
   border-bottom: 1px solid var(--line);
+}
+
+th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #ffffff;
 }
 
 th {
@@ -695,6 +887,15 @@ tr:last-child td {
   font-size: 13px;
 }
 
+.footer-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-end;
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .footer-brand {
   display: flex;
   align-items: center;
@@ -759,7 +960,11 @@ tr:last-child td {
   }
 
   .summary-grid,
-  .monitoring-summary {
+  .monitoring-summary,
+  .status-grid,
+  .monitoring-info-grid,
+  .graph-summary,
+  .history-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -801,8 +1006,14 @@ tr:last-child td {
     align-items: flex-start;
   }
 
+  .footer-info {
+    justify-content: flex-start;
+  }
+
   .summary-grid,
   .monitoring-summary,
+  .status-grid,
+  .monitoring-info-grid,
   .graph-summary,
   .history-summary {
     grid-template-columns: 1fr;

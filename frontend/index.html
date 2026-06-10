@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,10 +24,10 @@
     </button>
 
     <nav class="nav-menu" aria-label="Navigasi utama">
-      <a class="active" href="#dashboard" data-section="dashboard">Dashboard</a>
-      <a href="#monitoring" data-section="monitoring">Monitoring</a>
-      <a href="#grafik" data-section="grafik">Grafik</a>
-      <a href="#riwayat" data-section="riwayat">Riwayat</a>
+      <a class="active" href="#dashboard" data-section="dashboard"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i><span>Dashboard</span></a>
+      <a href="#monitoring" data-section="monitoring"><i class="fa-solid fa-microchip" aria-hidden="true"></i><span>Monitoring</span></a>
+      <a href="#grafik" data-section="grafik"><i class="fa-solid fa-chart-line" aria-hidden="true"></i><span>Grafik</span></a>
+      <a href="#riwayat" data-section="riwayat"><i class="fa-solid fa-history" aria-hidden="true"></i><span>Riwayat</span></a>
     </nav>
 
     <div class="profile" aria-label="Profil pengguna">
@@ -47,6 +48,25 @@
         </div>
         <div class="online-badge"><span></span>Sistem Online</div>
       </div>
+
+      <section class="status-grid" aria-label="Status sistem dan koneksi">
+        <article class="status-card">
+          <div class="status-title"><span class="status-dot online"></span><strong id="systemStatus">Sistem Online</strong></div>
+          <p>IoT, API, dan dashboard bekerja normal</p>
+        </article>
+        <article class="status-card">
+          <div class="status-title"><span class="status-dot connected"></span><strong id="connectionStatus">Sensor Terhubung</strong></div>
+          <p>Koneksi ESP32 dan Firebase stabil</p>
+        </article>
+        <article class="status-card">
+          <div class="status-title"><span class="status-dot firebase"></span><strong id="firebaseStatus">Database Aktif</strong></div>
+          <p>Realtime Database siap menerima pembacaan</p>
+        </article>
+        <article class="status-card">
+          <div class="status-title"><span class="status-dot update"></span><strong id="lastUpdateStatus">--</strong></div>
+          <p>Waktu pembaruan data terakhir</p>
+        </article>
+      </section>
 
       <section class="summary-grid">
         <article class="metric-card">
@@ -92,7 +112,7 @@
         <div class="dashboard-main">
           <article class="panel">
             <div class="panel-header">
-              <h2>Grafik Ringkas</h2>
+              <h2 class="panel-title has-icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i>Grafik Ringkas</h2>
               <select aria-label="Periode grafik ringkas">
                 <option>24 Jam Terakhir</option>
               </select>
@@ -104,7 +124,7 @@
 
           <article class="panel">
             <div class="panel-header">
-              <h2>Riwayat Ringkas</h2>
+              <h2 class="panel-title has-icon"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>Riwayat Ringkas</h2>
             </div>
             <div class="table-wrap">
               <table>
@@ -177,6 +197,22 @@
         </aside>
       </section>
 
+      <section class="monitoring-info-grid">
+        <article class="panel info-panel">
+          <h2 class="panel-title has-icon"><i class="fa-solid fa-chart-column" aria-hidden="true"></i>Ringkasan Monitoring Hari Ini</h2>
+          <div class="summary-list info-list">
+            <div><span>Nilai ADC Terakhir</span><strong data-field="adc">--</strong></div>
+            <div><span>Persentase Ideal</span><strong>31–70%</strong></div>
+            <div><span>Status Saat Ini</span><strong data-field="status">--</strong></div>
+            <div><span>Rekomendasi Singkat</span><strong data-field="recommendation">--</strong></div>
+          </div>
+        </article>
+        <article class="panel insight-panel">
+          <h2>Insight Kondisi Tanah</h2>
+          <p id="monitoringInsight">Kelembapan tanah saat ini akan membantu Anda mengambil keputusan penyiraman manual yang lebih akurat pada tanaman cabai.</p>
+        </article>
+      </section>
+
       <section class="monitoring-grid">
         <article class="panel gauge-panel">
           <h2>Gauge Kelembapan</h2>
@@ -194,7 +230,7 @@
         </article>
 
         <article class="panel">
-          <h2>Statistik Sensor</h2>
+          <h2 class="panel-title has-icon"><i class="fa-solid fa-table" aria-hidden="true"></i>Statistik Sensor</h2>
           <div class="table-wrap">
             <table class="compact-table">
               <thead>
@@ -210,7 +246,7 @@
         </article>
 
         <article class="panel device-panel">
-          <h2>Informasi Perangkat</h2>
+          <h2 class="panel-title has-icon"><i class="fa-solid fa-microchip" aria-hidden="true"></i>Informasi Perangkat</h2>
           <div class="device-list">
             <div><span>ID Perangkat</span><strong data-field="device">--</strong></div>
             <div><span>Status Perangkat</span><strong class="green-text">Aktif</strong></div>
@@ -276,19 +312,19 @@
           </article>
 
           <article class="panel">
-            <h2>Ringkasan Grafik</h2>
+            <h2 class="panel-title has-icon"><i class="fa-solid fa-chart-column" aria-hidden="true"></i>Ringkasan Grafik</h2>
             <div class="summary-list" id="chartSummary"></div>
           </article>
         </div>
 
         <aside class="graph-side">
           <article class="panel category-panel">
-            <h2>Kategori Kelembapan</h2>
+            <h2 class="panel-title has-icon"><i class="fa-solid fa-seedling" aria-hidden="true"></i>Kategori Kelembapan</h2>
             <div class="category-list" data-category-list></div>
           </article>
 
           <article class="panel interpretation-panel">
-            <h2>Interpretasi</h2>
+            <h2 class="panel-title has-icon"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i>Insight Kondisi Tanah</h2>
             <ul id="interpretationList"></ul>
           </article>
         </aside>
@@ -356,25 +392,32 @@
           <article class="panel filter-panel">
             <h2>Filter Ringkas</h2>
             <label>
+              Cari
+              <input id="historySearch" type="search" placeholder="Cari riwayat..." aria-label="Cari riwayat" />
+            </label>
+            <label>
               Periode
-              <select>
+              <select id="historyPeriod">
                 <option>24 Jam Terakhir</option>
               </select>
             </label>
             <label>
               Status
-              <select>
+              <select id="historyStatus">
                 <option>Semua Status</option>
                 <option>Kering</option>
                 <option>Normal</option>
                 <option>Terlalu basah</option>
               </select>
             </label>
-            <button type="button">Terapkan Filter</button>
+            <div class="export-buttons">
+              <button type="button" id="exportCsv">Export CSV</button>
+              <button type="button" id="exportExcel">Export Excel</button>
+            </div>
           </article>
 
           <article class="panel">
-            <h2>Ringkasan Riwayat</h2>
+            <h2 class="panel-title has-icon"><i class="fa-solid fa-list-check" aria-hidden="true"></i>Ringkasan Riwayat</h2>
             <div class="summary-list compact-summary" id="historySummary"></div>
           </article>
         </aside>
@@ -384,13 +427,17 @@
 
   <footer class="footer">
     <div class="footer-brand">
-      <img src="cabai.svg" alt="" class="footer-logo">
+      <img src="cabai.svg" alt="Logo SoilCare Cabai" class="footer-logo">
       <div>
         <strong>SoilCare Cabai</strong>
-        <p>Sistem Monitoring Kelembapan Tanah dan Rekomendasi Penyiraman Manual pada Tanaman Cabai Berbasis IoT</p>
+        <p>Monitoring Kelembapan Tanah Tanaman Cabai Berbasis IoT</p>
       </div>
     </div>
-    <span>Prototype dashboard monitoring kelembapan tanah</span>
+    <div class="footer-info">
+      <span>Universitas Harapan Bangsa</span>
+      <span>Teknik Informatika</span>
+      <span>2026</span>
+    </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

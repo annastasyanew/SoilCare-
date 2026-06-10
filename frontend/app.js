@@ -43,6 +43,13 @@ const statusInfo = {
   }
 };
 
+const appState = {
+  isLoaded: false,
+  filterStatus: "Semua Status",
+  searchQuery: "",
+  period: "24 Jam Terakhir"
+};
+
 let readings = demoReadings.map(normalizeReading);
 let latest = readings[readings.length - 1];
 let dashboardChart;
@@ -122,11 +129,194 @@ function setHtml(id, html) {
   }
 }
 
+function renderLoadingState() {
+  const loadingText = "Memuat data...";
+  setText('[data-field="humidity"]', loadingText);
+  setText('[data-field="updated"]', loadingText);
+  setText('[data-field="adc"]', loadingText);
+  setText('[data-field="status"]', loadingText);
+  setText('[data-field="recommendation"]', loadingText);
+  setText('[data-field="device"]', loadingText);
+  setById("statusHint", loadingText);
+  setById("alertTitle", loadingText);
+  setById("alertText", "Mohon tunggu sambungan Firebase.");
+  setById("averageCard", loadingText);
+  setById("totalData", loadingText);
+  setById("lastReading", loadingText);
+  setById("lastReadingTime", loadingText);
+  setById("historyAverage", loadingText);
+  setHtml("chartSummary", `
+    <div class="table-state">${loadingText}</div>
+  `);
+  setHtml("historySummary", `
+    <div class="table-state">${loadingText}</div>
+  `);
+  setHtml("dashboardHistory", '<tr><td colspan="4" class="table-state">Memuat riwayat...</td></tr>');
+  setHtml("historyTable", '<tr><td colspan="5" class="table-state">Memuat riwayat...</td></tr>');
+  setHtml("monitoringInsight", `
+    <div class="table-state">Memuat insight kondisi tanah...</div>
+  `);
+}
+
+function getFilteredReadings() {
+  const query = appState.searchQuery.trim().toLowerCase();
+
+  return readings.filter((item) => {
+    const matchesStatus = appState.filterStatus === "Semua Status" || item.status === appState.filterStatus;
+    const matchesSearch = !query || [
+      formatTime(item.timestamp),
+      item.status,
+      item.recommendation,
+      String(item.adc_value)
+    ].some((value) => String(value).toLowerCase().includes(query));
+
+    return matchesStatus && matchesSearch;
+  });
+}
+
+function downloadFile(filename, content, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(link.href);
+}
+
+function exportCsv() {
+  const rows = getFilteredReadings();
+
+  if (!rows.length) {
+    return;
+  }
+
+  const headers = ["Waktu", "ADC", "Kelembapan", "Status", "Rekomendasi"];
+  const body = rows.map((item) => [
+    formatTime(item.timestamp),
+    item.adc_value,
+    `${item.moisture}%`,
+    item.status,
+    item.recommendation
+  ].map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\n");
+
+  downloadFile("soilcare-riwayat.csv", `${headers.join(",")}\n${body}`, "text/csv;charset=utf-8;");
+}
+
+function exportExcel() {
+  const rows = getFilteredReadings();
+
+  if (!rows.length) {
+    return;
+  }
+
+  const headers = ["Waktu", "ADC", "Kelembapan", "Status", "Rekomendasi"];
+  const html = `
+    <table>
+      <thead><tr>${headers.map((text) => `<th>${text}</th>`).join("")}</tr></thead>
+      <tbody>${rows.map((item) => `
+        <tr>
+          <td>${formatTime(item.timestamp)}</td>
+          <td>${item.adc_value}</td>
+          <td>${item.moisture}%</td>
+          <td>${item.status}</td>
+          <td>${item.recommendation}</td>
+        </tr>
+      `).join("")}</tbody>
+    </table>`;
+
+  downloadFile("soilcare-riwayat.xls", html, "application/vnd.ms-excel");
+}
+
+function renderHistory() {
+  if (!appState.isLoaded) {
+    setHtml("historyTable", '<tr><td colspan="5" class="table-state">Memuat riwayat...</td></tr>');
+    return;
+  }
+
+  const filtered = getFilteredReadings();
+
+  if (!filtered.length) {
+    setHtml("historyTable", '<tr><td colspan="5" class="table-state">Belum ada data riwayat untuk filter saat ini.</td></tr>');
+    return;
+  }
+
+  setHtml("historyTable", tableRows(filtered, true));
+}
+
+function renderStatusIndicators() {
+  if (!appState.isLoaded) {
+    setById("systemStatus", "Memuat...");
+    setById("connectionStatus", navigator.onLine ? "Sensor Terhubung" : "Koneksi Terputus");
+    setById("firebaseStatus", "Memeriksa database...");
+    setById("lastUpdateStatus", "--");
+    return;
+  }
+
+  setById("systemStatus", latest ? "Sistem Online" : "Sistem Offline");
+  setById("connectionStatus", navigator.onLine ? "Sensor Terhubung" : "Koneksi Terputus");
+  setById("firebaseStatus", "Database Aktif");
+  setById("lastUpdateStatus", latest ? formatTime(latest.timestamp) : "--");
+}
+
+function initHistoryControls() {
+  const searchInput = document.getElementById("historySearch");
+  const statusSelect = document.getElementById("historyStatus");
+  const periodSelect = document.getElementById("historyPeriod");
+  const exportCsvBtn = document.getElementById("exportCsv");
+  const exportExcelBtn = document.getElementById("exportExcel");
+
+  if (searchInput) {
+    searchInput.addEventListener("input", (event) => {
+      appState.searchQuery = event.currentTarget.value;
+      renderAll();
+    });
+  }
+
+  if (statusSelect) {
+    statusSelect.addEventListener("change", (event) => {
+      appState.filterStatus = event.currentTarget.value;
+      renderAll();
+    });
+  }
+
+  if (periodSelect) {
+    periodSelect.addEventListener("change", (event) => {
+      appState.period = event.currentTarget.value;
+    });
+  }
+
+  if (exportCsvBtn) {
+    exportCsvBtn.addEventListener("click", exportCsv);
+  }
+
+  if (exportExcelBtn) {
+    exportExcelBtn.addEventListener("click", exportExcel);
+  }
+}
+
 function statusClass(status) {
   return statusClassMap[status] || "normal";
 }
 
 function renderLatest() {
+  if (!appState.isLoaded) {
+    setText('[data-field="humidity"]', "Memuat...");
+    setText('[data-field="updated"]', "Memuat data...");
+    setText('[data-field="adc"]', "Memuat...");
+    setText('[data-field="status"]', "Memuat...");
+    setText('[data-field="recommendation"]', "Memuat...");
+    setText('[data-field="device"]', "Memuat...");
+    setById("statusHint", "Memuat kondisi...");
+    setById("alertTitle", "Memuat status...");
+    setById("alertText", "Menunggu data terbaru dari sensor.");
+    setHtml("monitoringInsight", `
+      <div class="table-state">Memuat insight kondisi tanah...</div>
+    `);
+    return;
+  }
+
   const currentStatusClass = statusClass(latest.status);
   const currentInfo = statusInfo[latest.status] || statusInfo.Normal;
 
@@ -139,6 +329,7 @@ function renderLatest() {
   setById("statusHint", currentInfo.hint);
   setById("alertTitle", currentInfo.title);
   setById("alertText", currentInfo.text);
+  renderInsight();
 
   document.querySelectorAll(".status-card, .recommendation-card").forEach((card) => {
     card.classList.remove("status-dry", "status-normal", "status-wet");
@@ -157,6 +348,33 @@ function renderLatest() {
     gauge.style.setProperty("--value", latest.moisture);
     gauge.style.setProperty("--gauge-color", gaugeColor);
   }
+}
+
+function renderInsight() {
+  if (!latest || !appState.isLoaded) {
+    setHtml("monitoringInsight", `
+      <div class="table-state">Memuat insight kondisi tanah...</div>
+    `);
+    return;
+  }
+
+  const status = latest.status;
+  const moistureLabel = `${latest.moisture}%`;
+  const description = {
+    Kering: `Kelembapan ${moistureLabel} menunjukkan kondisi tanah kering. Segera siram secara manual untuk mencegah stres pada tanaman cabai.`,
+    Normal: `Kelembapan ${moistureLabel} berada dalam rentang ideal untuk pertumbuhan tanaman cabai. Tidak perlu menyiram tambahan saat ini.`,
+    "Terlalu basah": `Kelembapan ${moistureLabel} menunjukkan tanah terlalu basah. Tunda penyiraman dan pastikan drainase baik.`
+  }[status] || `Kelembapan ${moistureLabel} berada dalam kondisi ${status.toLowerCase()}.`;
+
+  const riskText = status === "Normal" ? "rendah" : status === "Kering" ? "tinggi" : "sedang";
+
+  setHtml("monitoringInsight", `
+    <div class="insight-copy">
+      <p><strong>Status Saat Ini:</strong> ${status}</p>
+      <p>${description}</p>
+      <p>Risiko kekeringan dan kelebihan air relatif ${riskText}.</p>
+    </div>
+  `);
 }
 
 function renderCategories() {
@@ -187,7 +405,7 @@ function tableRows(rows, includeAdc = false) {
 
 function renderTables() {
   setHtml("dashboardHistory", tableRows(readings.slice(-5)));
-  setHtml("historyTable", tableRows(readings, true));
+  renderHistory();
 }
 
 function renderSensorStats() {
@@ -247,29 +465,76 @@ function makeChart(canvasId) {
     type: "line",
     data: {
       labels: readings.map((item) => formatTime(item.timestamp)),
-      datasets: [{
-        label: "Kelembapan",
-        data: readings.map((item) => item.moisture),
-        borderColor: "#07822e",
-        backgroundColor: "rgba(18, 147, 59, 0.16)",
-        borderWidth: 3,
-        fill: true,
-        pointRadius: 5,
-        pointBackgroundColor: "#07822e",
-        tension: 0.35
-      }]
+      datasets: [
+        {
+          label: "Kelembapan",
+          data: readings.map((item) => item.moisture),
+          borderColor: "#07822e",
+          backgroundColor: "rgba(18, 147, 59, 0.18)",
+          borderWidth: 3,
+          fill: true,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          pointBackgroundColor: "#07822e",
+          tension: 0.35
+        },
+        {
+          label: "Batas Kering 30%",
+          data: readings.map(() => 30),
+          borderColor: "#d97706",
+          borderDash: [6, 6],
+          borderWidth: 1,
+          pointRadius: 0,
+          fill: false,
+          tension: 0
+        },
+        {
+          label: "Batas Basah 70%",
+          data: readings.map(() => 70),
+          borderColor: "#2563eb",
+          borderDash: [6, 6],
+          borderWidth: 1,
+          pointRadius: 0,
+          fill: false,
+          tension: 0
+        }
+      ]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { display: false }
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              if (context.dataset.label === "Kelembapan") {
+                return `Kelembapan: ${context.parsed.y}%`;
+              }
+              return null;
+            },
+            afterBody: (context) => {
+              const index = context[0]?.dataIndex;
+              const item = readings[index];
+              if (!item) return "";
+              return [`ADC: ${item.adc_value}`, `Status: ${item.status}`];
+            }
+          },
+          backgroundColor: "rgba(15, 23, 42, 0.92)",
+          titleColor: "#ffffff",
+          bodyColor: "#f8fafc",
+          borderColor: "rgba(255, 255, 255, 0.12)",
+          borderWidth: 1
+        }
       },
       scales: {
         y: {
           min: 0,
           max: 100,
-          ticks: { callback: (value) => `${value}%` }
+          ticks: { callback: (value) => `${value}%` },
+          grid: {
+            color: "rgba(15, 23, 42, 0.08)"
+          }
         },
         x: {
           grid: { display: false }
@@ -298,8 +563,10 @@ function renderAll() {
   }
 
   latest = latest || readings[readings.length - 1];
+  appState.isLoaded = true;
 
   renderLatest();
+  renderStatusIndicators();
   renderCategories();
   renderTables();
   renderSensorStats();
@@ -354,20 +621,29 @@ function initNavigation() {
 }
 
 function setConnectionLabel() {
+  const label = navigator.onLine ? "Sistem Online" : "Sistem Offline";
+
   document.querySelectorAll(".online-badge").forEach((badge) => {
-    badge.innerHTML = "<span></span>Sistem Online";
+    badge.innerHTML = `<span></span>${label}`;
   });
 }
 
 function subscribeData() {
-  renderAll();
+  let fallbackTimer = window.setTimeout(() => {
+    if (!appState.isLoaded) {
+      appState.isLoaded = true;
+      renderAll();
+    }
+  }, 1200);
 
   onValue(ref(database, "latest"), (snapshot) => {
     const value = snapshot.val();
 
     if (value) {
       latest = normalizeReading(value);
+      appState.isLoaded = true;
       renderAll();
+      window.clearTimeout(fallbackTimer);
     }
   });
 
@@ -382,12 +658,24 @@ function subscribeData() {
       .map(normalizeReading)
       .sort((a, b) => String(a.timestamp).localeCompare(String(b.timestamp)));
     latest = readings[readings.length - 1];
+    appState.isLoaded = true;
     renderAll();
+    window.clearTimeout(fallbackTimer);
   });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   setConnectionLabel();
+  window.addEventListener("online", () => {
+    setConnectionLabel();
+    renderStatusIndicators();
+  });
+  window.addEventListener("offline", () => {
+    setConnectionLabel();
+    renderStatusIndicators();
+  });
   initNavigation();
+  initHistoryControls();
+  renderLoadingState();
   subscribeData();
 });
