@@ -261,6 +261,16 @@ p {
   background: var(--green-700);
 }
 
+.online-badge.offline {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.online-badge.offline span,
+.status-dot.offline {
+  background: #dc2626;
+}
+
 .panel,
 .metric-card,
 .plant-card,
@@ -599,6 +609,58 @@ select {
 
 .table-wrap {
   overflow-x: auto;
+}
+
+.history-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.pagination-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pagination-numbers {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pagination-buttons button {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--green-700);
+  background: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.pagination-buttons .pagination-number {
+  min-width: 38px;
+  padding: 0 10px;
+}
+
+.pagination-buttons .pagination-number.active {
+  border-color: var(--green-700);
+  color: #ffffff;
+  background: var(--green-700);
+}
+
+.pagination-buttons button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 table {
@@ -1026,6 +1088,27 @@ tr:last-child td {
 }
 
 @media (max-width: 560px) {
+  .history-pagination,
+  .pagination-buttons {
+    width: 100%;
+  }
+
+  .history-pagination {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .pagination-buttons {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .pagination-numbers {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+
   .metric-card {
     min-height: 132px;
     padding: 20px;

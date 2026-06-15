@@ -1,9 +1,7 @@
 import { database } from "./firebase.js";
 import {
   ref,
-  onValue,
-  query,
-  limitToLast
+  onValue
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const demoReadings = [
@@ -45,10 +43,15 @@ const statusInfo = {
 
 const appState = {
   isLoaded: false,
+  firebaseConnected: null,
   filterStatus: "Semua Status",
   searchQuery: "",
-  period: "24 Jam Terakhir"
+  period: "Semua Riwayat",
+  historyPage: 1
 };
+
+const DEVICE_OFFLINE_AFTER_MS = 3 * 60 * 1000;
+const HISTORY_PAGE_SIZE = 20;
 
 let readings = demoReadings.map(normalizeReading);
 let latest = readings[readings.length - 1];
@@ -94,6 +97,22 @@ function formatTime(timestamp) {
     hour: "2-digit",
     minute: "2-digit"
   }).format(date);
+}
+
+function getReadingTime(timestamp) {
+  const time = new Date(String(timestamp).replace(" ", "T")).getTime();
+  return Number.isNaN(time) ? null : time;
+}
+
+function isDeviceOnline() {
+  const lastReadingTime = latest ? getReadingTime(latest.timestamp) : null;
+
+  return Boolean(
+    navigator.onLine
+    && appState.firebaseConnected
+    && lastReadingTime
+    && Date.now() - lastReadingTime <= DEVICE_OFFLINE_AFTER_MS
+  );
 }
 
 function getStats() {
@@ -160,8 +179,16 @@ function renderLoadingState() {
 
 function getFilteredReadings() {
   const query = appState.searchQuery.trim().toLowerCase();
+  const now = new Date();
+  const periodStart = {
+    "Hari Ini": new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime(),
+    "7 Hari Terakhir": now.getTime() - (7 * 24 * 60 * 60 * 1000),
+    "30 Hari Terakhir": now.getTime() - (30 * 24 * 60 * 60 * 1000)
+  }[appState.period];
 
   return readings.filter((item) => {
+    const readingTime = getReadingTime(item.timestamp);
+    const matchesPeriod = !periodStart || (readingTime && readingTime >= periodStart);
     const matchesStatus = appState.filterStatus === "Semua Status" || item.status === appState.filterStatus;
     const matchesSearch = !query || [
       formatTime(item.timestamp),
@@ -170,7 +197,7 @@ function getFilteredReadings() {
       String(item.adc_value)
     ].some((value) => String(value).toLowerCase().includes(query));
 
-    return matchesStatus && matchesSearch;
+    return matchesPeriod && matchesStatus && matchesSearch;
   });
 }
 
@@ -229,6 +256,24 @@ function exportExcel() {
   downloadFile("soilcare-riwayat.xls", html, "application/vnd.ms-excel");
 }
 
+function paginationPageNumbers(currentPage, totalPages) {
+  const firstPage = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
+  const lastPage = Math.min(totalPages, firstPage + 4);
+
+  return Array.from(
+    { length: lastPage - firstPage + 1 },
+    (_, index) => firstPage + index
+  ).map((page) => `
+    <button
+      type="button"
+      class="pagination-number ${page === currentPage ? "active" : ""}"
+      data-history-page="${page}"
+      aria-label="Buka halaman ${page}"
+      ${page === currentPage ? 'aria-current="page"' : ""}
+    >${page}</button>
+  `).join("");
+}
+
 function renderHistory() {
   if (!appState.isLoaded) {
     setHtml("historyTable", '<tr><td colspan="5" class="table-state">Memuat riwayat...</td></tr>');
@@ -239,37 +284,60 @@ function renderHistory() {
 
   if (!filtered.length) {
     setHtml("historyTable", '<tr><td colspan="5" class="table-state">Belum ada data riwayat untuk filter saat ini.</td></tr>');
+    setHtml("historyPagination", '<span>Tidak ada data yang dapat ditampilkan.</span>');
     return;
   }
 
-  setHtml("historyTable", tableRows(filtered, true));
+  const totalPages = Math.ceil(filtered.length / HISTORY_PAGE_SIZE);
+  appState.historyPage = Math.min(Math.max(appState.historyPage, 1), totalPages);
+
+  const end = filtered.length - ((appState.historyPage - 1) * HISTORY_PAGE_SIZE);
+  const start = Math.max(0, end - HISTORY_PAGE_SIZE);
+  const pageRows = filtered.slice(start, end);
+
+  setHtml("historyTable", tableRows(pageRows, true));
+  setHtml("historyPagination", `
+    <span class="pagination-info">Menampilkan ${filtered.length - end + 1}-${filtered.length - start} dari ${filtered.length} data</span>
+    <div class="pagination-buttons">
+      <button type="button" data-history-page="${appState.historyPage - 1}" ${appState.historyPage === 1 ? "disabled" : ""}>&lt; Sebelumnya</button>
+      <div class="pagination-numbers">${paginationPageNumbers(appState.historyPage, totalPages)}</div>
+      <button type="button" data-history-page="${appState.historyPage + 1}" ${appState.historyPage === totalPages ? "disabled" : ""}>Berikutnya &gt;</button>
+    </div>
+  `);
 }
 
 function renderStatusIndicators() {
   if (!appState.isLoaded) {
     setById("systemStatus", "Memuat...");
-    setById("connectionStatus", navigator.onLine ? "Sensor Terhubung" : "Koneksi Terputus");
+    setById("connectionStatus", "Memeriksa sensor...");
     setById("firebaseStatus", "Memeriksa database...");
     setById("lastUpdateStatus", "--");
     return;
   }
 
-  setById("systemStatus", latest ? "Sistem Online" : "Sistem Offline");
-  setById("connectionStatus", navigator.onLine ? "Sensor Terhubung" : "Koneksi Terputus");
-  setById("firebaseStatus", "Database Aktif");
+  const deviceOnline = isDeviceOnline();
+  setById("systemStatus", deviceOnline ? "Sistem Online" : "Sistem Offline");
+  setById("connectionStatus", deviceOnline ? "Sensor Terhubung" : "Sensor Terputus");
+  setById("firebaseStatus", appState.firebaseConnected ? "Database Aktif" : "Database Terputus");
   setById("lastUpdateStatus", latest ? formatTime(latest.timestamp) : "--");
+
+  document.querySelector(".status-dot.online")?.classList.toggle("offline", !deviceOnline);
+  document.querySelector(".status-dot.connected")?.classList.toggle("offline", !deviceOnline);
+  document.querySelector(".status-dot.firebase")?.classList.toggle("offline", !appState.firebaseConnected);
 }
 
 function initHistoryControls() {
   const searchInput = document.getElementById("historySearch");
   const statusSelect = document.getElementById("historyStatus");
   const periodSelect = document.getElementById("historyPeriod");
+  const pagination = document.getElementById("historyPagination");
   const exportCsvBtn = document.getElementById("exportCsv");
   const exportExcelBtn = document.getElementById("exportExcel");
 
   if (searchInput) {
     searchInput.addEventListener("input", (event) => {
       appState.searchQuery = event.currentTarget.value;
+      appState.historyPage = 1;
       renderAll();
     });
   }
@@ -277,6 +345,7 @@ function initHistoryControls() {
   if (statusSelect) {
     statusSelect.addEventListener("change", (event) => {
       appState.filterStatus = event.currentTarget.value;
+      appState.historyPage = 1;
       renderAll();
     });
   }
@@ -284,6 +353,21 @@ function initHistoryControls() {
   if (periodSelect) {
     periodSelect.addEventListener("change", (event) => {
       appState.period = event.currentTarget.value;
+      appState.historyPage = 1;
+      renderAll();
+    });
+  }
+
+  if (pagination) {
+    pagination.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-history-page]");
+
+      if (!button || button.disabled) {
+        return;
+      }
+
+      appState.historyPage = Number(button.dataset.historyPage);
+      renderHistory();
     });
   }
 
@@ -565,6 +649,7 @@ function renderAll() {
   latest = latest || readings[readings.length - 1];
   appState.isLoaded = true;
 
+  setConnectionLabel();
   renderLatest();
   renderStatusIndicators();
   renderCategories();
@@ -621,10 +706,12 @@ function initNavigation() {
 }
 
 function setConnectionLabel() {
-  const label = navigator.onLine ? "Sistem Online" : "Sistem Offline";
+  const deviceOnline = isDeviceOnline();
+  const label = deviceOnline ? "Sistem Online" : "Sistem Offline";
 
   document.querySelectorAll(".online-badge").forEach((badge) => {
     badge.innerHTML = `<span></span>${label}`;
+    badge.classList.toggle("offline", !deviceOnline);
   });
 }
 
@@ -635,6 +722,12 @@ function subscribeData() {
       renderAll();
     }
   }, 1200);
+
+  onValue(ref(database, ".info/connected"), (snapshot) => {
+    appState.firebaseConnected = snapshot.val() === true;
+    setConnectionLabel();
+    renderStatusIndicators();
+  });
 
   onValue(ref(database, "latest"), (snapshot) => {
     const value = snapshot.val();
@@ -647,7 +740,7 @@ function subscribeData() {
     }
   });
 
-  onValue(query(ref(database, "readings"), limitToLast(20)), (snapshot) => {
+  onValue(ref(database, "readings"), (snapshot) => {
     const value = snapshot.val();
 
     if (!value) {
@@ -678,4 +771,9 @@ document.addEventListener("DOMContentLoaded", () => {
   initHistoryControls();
   renderLoadingState();
   subscribeData();
+
+  window.setInterval(() => {
+    setConnectionLabel();
+    renderStatusIndicators();
+  }, 15000);
 });

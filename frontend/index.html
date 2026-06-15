@@ -344,7 +344,7 @@
         <article class="metric-card">
           <div class="card-icon leaf-icon">#</div>
           <div>
-            <h2>Total Data Hari Ini</h2>
+            <h2>Total Data Riwayat</h2>
             <strong id="totalData">--</strong>
             <p>Data tercatat</p>
           </div>
@@ -362,7 +362,7 @@
           <div>
             <h2>Rata-rata Kelembapan</h2>
             <strong id="historyAverage">--%</strong>
-            <p>24 jam terakhir</p>
+            <p>Seluruh riwayat</p>
           </div>
         </article>
       </section>
@@ -386,6 +386,14 @@
               <tbody id="historyTable"></tbody>
             </table>
           </div>
+          <div class="history-pagination" id="historyPagination" aria-label="Navigasi halaman riwayat">
+            <span class="pagination-info">Memuat jumlah data...</span>
+            <div class="pagination-buttons">
+              <button type="button" disabled>&lt; Sebelumnya</button>
+              <button type="button" class="pagination-number active" aria-current="page">1</button>
+              <button type="button" disabled>Berikutnya &gt;</button>
+            </div>
+          </div>
         </article>
 
         <aside class="history-side">
@@ -398,7 +406,10 @@
             <label>
               Periode
               <select id="historyPeriod">
-                <option>24 Jam Terakhir</option>
+                <option>Semua Riwayat</option>
+                <option>Hari Ini</option>
+                <option>7 Hari Terakhir</option>
+                <option>30 Hari Terakhir</option>
               </select>
             </label>
             <label>
