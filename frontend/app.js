@@ -12,9 +12,9 @@ const demoReadings = [
 ];
 
 const categoryData = [
-  { className: "dry", range: "0 - 30%", label: "Kering" },
-  { className: "normal", range: "31 - 70%", label: "Normal" },
-  { className: "wet", range: "71 - 100%", label: "Terlalu basah" }
+  { className: "dry", range: "0 - 30%", label: "Kering", description: "Perlu penyiraman manual" },
+  { className: "normal", range: "31 - 70%", label: "Normal", description: "Kondisi tanah ideal" },
+  { className: "wet", range: "71 - 100%", label: "Terlalu basah", description: "Tunda penyiraman" }
 ];
 
 const statusClassMap = {
@@ -47,6 +47,9 @@ const appState = {
   filterStatus: "Semua Status",
   searchQuery: "",
   period: "Semua Riwayat",
+  dateFrom: "",
+  dateTo: "",
+  graphRange: "all",
   historyPage: 1
 };
 
@@ -104,6 +107,17 @@ function getReadingTime(timestamp) {
   return Number.isNaN(time) ? null : time;
 }
 
+function getDateBoundary(dateValue, boundary) {
+  if (!dateValue) {
+    return null;
+  }
+
+  const suffix = boundary === "end" ? "T23:59:59.999" : "T00:00:00.000";
+  const time = new Date(`${dateValue}${suffix}`).getTime();
+
+  return Number.isNaN(time) ? null : time;
+}
+
 function isDeviceOnline() {
   const lastReadingTime = latest ? getReadingTime(latest.timestamp) : null;
 
@@ -126,6 +140,48 @@ function getStats() {
   };
 }
 
+function getStatsFor(items) {
+  const values = items.map((item) => item.moisture);
+  const total = values.reduce((sum, value) => sum + value, 0);
+
+  if (!values.length) {
+    return { max: 0, min: 0, average: 0 };
+  }
+
+  return {
+    max: Math.max(...values),
+    min: Math.min(...values),
+    average: Math.round(total / values.length)
+  };
+}
+
+function graphReadings() {
+  if (appState.graphRange === "all") {
+    return readings;
+  }
+
+  const now = new Date();
+  const rangeStart = {
+    "1h": now.getTime() - (60 * 60 * 1000),
+    "6h": now.getTime() - (6 * 60 * 60 * 1000),
+    "24h": now.getTime() - (24 * 60 * 60 * 1000),
+    today: new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime(),
+    "7d": now.getTime() - (7 * 24 * 60 * 60 * 1000),
+    "30d": now.getTime() - (30 * 24 * 60 * 60 * 1000)
+  }[appState.graphRange];
+
+  if (rangeStart) {
+    const rangedReadings = readings.filter((item) => {
+      const readingTime = getReadingTime(item.timestamp);
+      return readingTime && readingTime >= rangeStart;
+    });
+
+    return rangedReadings;
+  }
+
+  return readings;
+}
+
 function setText(selector, text) {
   document.querySelectorAll(selector).forEach((element) => {
     element.textContent = text;
@@ -138,6 +194,18 @@ function setById(id, text) {
   if (element) {
     element.textContent = text;
   }
+}
+
+function setStateById(id, text, state) {
+  const element = document.getElementById(id);
+
+  if (!element) {
+    return;
+  }
+
+  element.textContent = text;
+  element.classList.remove("green-text", "red-text", "muted-text");
+  element.classList.add(`${state}-text`);
 }
 
 function setHtml(id, html) {
@@ -157,6 +225,7 @@ function renderLoadingState() {
   setText('[data-field="recommendation"]', loadingText);
   setText('[data-field="device"]', loadingText);
   setById("statusHint", loadingText);
+  setById("alertHeadingText", "Status Kondisi");
   setById("alertTitle", loadingText);
   setById("alertText", "Mohon tunggu sambungan Firebase.");
   setById("averageCard", loadingText);
@@ -164,6 +233,9 @@ function renderLoadingState() {
   setById("lastReading", loadingText);
   setById("lastReadingTime", loadingText);
   setById("historyAverage", loadingText);
+  setStateById("deviceStatusText", loadingText, "muted");
+  setStateById("deviceConnectionText", loadingText, "muted");
+  setStateById("deviceUpdateText", loadingText, "muted");
   setHtml("chartSummary", `
     <div class="table-state">${loadingText}</div>
   `);
@@ -185,10 +257,14 @@ function getFilteredReadings() {
     "7 Hari Terakhir": now.getTime() - (7 * 24 * 60 * 60 * 1000),
     "30 Hari Terakhir": now.getTime() - (30 * 24 * 60 * 60 * 1000)
   }[appState.period];
+  const dateFrom = getDateBoundary(appState.dateFrom, "start");
+  const dateTo = getDateBoundary(appState.dateTo, "end");
 
   return readings.filter((item) => {
     const readingTime = getReadingTime(item.timestamp);
     const matchesPeriod = !periodStart || (readingTime && readingTime >= periodStart);
+    const matchesDateFrom = !dateFrom || (readingTime && readingTime >= dateFrom);
+    const matchesDateTo = !dateTo || (readingTime && readingTime <= dateTo);
     const matchesStatus = appState.filterStatus === "Semua Status" || item.status === appState.filterStatus;
     const matchesSearch = !query || [
       formatTime(item.timestamp),
@@ -197,7 +273,7 @@ function getFilteredReadings() {
       String(item.adc_value)
     ].some((value) => String(value).toLowerCase().includes(query));
 
-    return matchesPeriod && matchesStatus && matchesSearch;
+    return matchesPeriod && matchesDateFrom && matchesDateTo && matchesStatus && matchesSearch;
   });
 }
 
@@ -312,6 +388,9 @@ function renderStatusIndicators() {
     setById("connectionStatus", "Memeriksa sensor...");
     setById("firebaseStatus", "Memeriksa database...");
     setById("lastUpdateStatus", "--");
+    setStateById("deviceStatusText", "Memuat...", "muted");
+    setStateById("deviceConnectionText", "Memuat...", "muted");
+    setStateById("deviceUpdateText", "--", "muted");
     return;
   }
 
@@ -320,16 +399,22 @@ function renderStatusIndicators() {
   setById("connectionStatus", deviceOnline ? "Sensor Terhubung" : "Sensor Terputus");
   setById("firebaseStatus", appState.firebaseConnected ? "Database Aktif" : "Database Terputus");
   setById("lastUpdateStatus", latest ? formatTime(latest.timestamp) : "--");
+  setStateById("deviceStatusText", deviceOnline ? "Aktif" : "Nonaktif", deviceOnline ? "green" : "red");
+  setStateById("deviceConnectionText", deviceOnline ? "Terhubung" : "Terputus", deviceOnline ? "green" : "red");
+  setStateById("deviceUpdateText", latest ? formatTime(latest.timestamp) : "--", deviceOnline ? "green" : "red");
 
   document.querySelector(".status-dot.online")?.classList.toggle("offline", !deviceOnline);
   document.querySelector(".status-dot.connected")?.classList.toggle("offline", !deviceOnline);
   document.querySelector(".status-dot.firebase")?.classList.toggle("offline", !appState.firebaseConnected);
+  document.querySelector(".status-dot.update")?.classList.toggle("offline", !deviceOnline);
 }
 
 function initHistoryControls() {
   const searchInput = document.getElementById("historySearch");
   const statusSelect = document.getElementById("historyStatus");
   const periodSelect = document.getElementById("historyPeriod");
+  const dateFromInput = document.getElementById("historyDateFrom");
+  const dateToInput = document.getElementById("historyDateTo");
   const pagination = document.getElementById("historyPagination");
   const exportCsvBtn = document.getElementById("exportCsv");
   const exportExcelBtn = document.getElementById("exportExcel");
@@ -353,6 +438,30 @@ function initHistoryControls() {
   if (periodSelect) {
     periodSelect.addEventListener("change", (event) => {
       appState.period = event.currentTarget.value;
+      appState.dateFrom = "";
+      appState.dateTo = "";
+      if (dateFromInput) dateFromInput.value = "";
+      if (dateToInput) dateToInput.value = "";
+      appState.historyPage = 1;
+      renderAll();
+    });
+  }
+
+  if (dateFromInput) {
+    dateFromInput.addEventListener("change", (event) => {
+      appState.dateFrom = event.currentTarget.value;
+      appState.period = "Semua Riwayat";
+      if (periodSelect) periodSelect.value = appState.period;
+      appState.historyPage = 1;
+      renderAll();
+    });
+  }
+
+  if (dateToInput) {
+    dateToInput.addEventListener("change", (event) => {
+      appState.dateTo = event.currentTarget.value;
+      appState.period = "Semua Riwayat";
+      if (periodSelect) periodSelect.value = appState.period;
       appState.historyPage = 1;
       renderAll();
     });
@@ -393,6 +502,7 @@ function renderLatest() {
     setText('[data-field="recommendation"]', "Memuat...");
     setText('[data-field="device"]', "Memuat...");
     setById("statusHint", "Memuat kondisi...");
+    setById("alertHeadingText", "Status Kondisi");
     setById("alertTitle", "Memuat status...");
     setById("alertText", "Menunggu data terbaru dari sensor.");
     setHtml("monitoringInsight", `
@@ -411,6 +521,7 @@ function renderLatest() {
   setText('[data-field="recommendation"]', latest.recommendation);
   setText('[data-field="device"]', latest.device_id);
   setById("statusHint", currentInfo.hint);
+  setById("alertHeadingText", latest.status === "Normal" ? "Status Kondisi" : "Peringatan");
   setById("alertTitle", currentInfo.title);
   setById("alertText", currentInfo.text);
   renderInsight();
@@ -464,9 +575,11 @@ function renderInsight() {
 function renderCategories() {
   const html = categoryData.map((category) => `
     <div class="category ${category.className}">
-      <span class="category-dot"></span>
-      <span>${category.range}</span>
-      <strong>${category.label}</strong>
+      <div>
+        <strong>${category.label}</strong>
+        <span>${category.description}</span>
+      </div>
+      <em>${category.range}</em>
     </div>
   `).join("");
 
@@ -511,6 +624,8 @@ function renderSensorStats() {
 
 function renderSummary() {
   const stats = getStats();
+  const selectedGraphReadings = graphReadings();
+  const chartStats = getStatsFor(selectedGraphReadings);
 
   setById("averageCard", `${stats.average}%`);
   setById("totalData", readings.length);
@@ -519,10 +634,10 @@ function renderSummary() {
   setById("historyAverage", `${stats.average}%`);
 
   setHtml("chartSummary", `
-    <div><span>Nilai Tertinggi</span><strong>${stats.max}%</strong></div>
-    <div><span>Nilai Terendah</span><strong>${stats.min}%</strong></div>
-    <div><span>Rata-rata</span><strong>${stats.average}%</strong></div>
-    <div><span>Update Terakhir</span><strong>${formatTime(latest.timestamp)}</strong></div>
+    <div><span>Data Ditampilkan</span><strong>${selectedGraphReadings.length}</strong></div>
+    <div><span>Nilai Tertinggi</span><strong>${chartStats.max}%</strong></div>
+    <div><span>Nilai Terendah</span><strong>${chartStats.min}%</strong></div>
+    <div><span>Rata-rata</span><strong>${chartStats.average}%</strong></div>
   `);
 
   setHtml("historySummary", `
@@ -538,7 +653,7 @@ function renderSummary() {
   `);
 }
 
-function makeChart(canvasId) {
+function makeChart(canvasId, chartReadings = readings) {
   const canvas = document.getElementById(canvasId);
 
   if (!canvas || !window.Chart) {
@@ -548,11 +663,11 @@ function makeChart(canvasId) {
   return new Chart(canvas, {
     type: "line",
     data: {
-      labels: readings.map((item) => formatTime(item.timestamp)),
+      labels: chartReadings.map((item) => formatTime(item.timestamp)),
       datasets: [
         {
           label: "Kelembapan",
-          data: readings.map((item) => item.moisture),
+          data: chartReadings.map((item) => item.moisture),
           borderColor: "#07822e",
           backgroundColor: "rgba(18, 147, 59, 0.18)",
           borderWidth: 3,
@@ -564,7 +679,7 @@ function makeChart(canvasId) {
         },
         {
           label: "Batas Kering 30%",
-          data: readings.map(() => 30),
+          data: chartReadings.map(() => 30),
           borderColor: "#d97706",
           borderDash: [6, 6],
           borderWidth: 1,
@@ -574,7 +689,7 @@ function makeChart(canvasId) {
         },
         {
           label: "Batas Basah 70%",
-          data: readings.map(() => 70),
+          data: chartReadings.map(() => 70),
           borderColor: "#2563eb",
           borderDash: [6, 6],
           borderWidth: 1,
@@ -599,7 +714,7 @@ function makeChart(canvasId) {
             },
             afterBody: (context) => {
               const index = context[0]?.dataIndex;
-              const item = readings[index];
+              const item = chartReadings[index];
               if (!item) return "";
               return [`ADC: ${item.adc_value}`, `Status: ${item.status}`];
             }
@@ -637,8 +752,23 @@ function renderCharts() {
     mainChart.destroy();
   }
 
-  dashboardChart = makeChart("dashboardChart");
-  mainChart = makeChart("mainChart");
+  dashboardChart = makeChart("dashboardChart", readings.slice(-8));
+  mainChart = makeChart("mainChart", graphReadings());
+}
+
+function initGraphControls() {
+  const graphRangeSelect = document.getElementById("graphRange");
+
+  if (!graphRangeSelect) {
+    return;
+  }
+
+  graphRangeSelect.value = appState.graphRange;
+  graphRangeSelect.addEventListener("change", (event) => {
+    appState.graphRange = event.currentTarget.value;
+    renderSummary();
+    renderCharts();
+  });
 }
 
 function renderAll() {
@@ -692,6 +822,21 @@ function initNavigation() {
       return;
     }
 
+    event.preventDefault();
+    window.location.hash = link.dataset.section;
+    showView(link.dataset.section);
+    menu.classList.remove("open");
+    toggle.setAttribute("aria-expanded", "false");
+  });
+
+  document.addEventListener("keydown", (event) => {
+    const link = event.target.closest('[data-section][role="link"]');
+
+    if (!link || (event.key !== "Enter" && event.key !== " ")) {
+      return;
+    }
+
+    event.preventDefault();
     window.location.hash = link.dataset.section;
     showView(link.dataset.section);
     menu.classList.remove("open");
@@ -769,6 +914,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   initNavigation();
   initHistoryControls();
+  initGraphControls();
   renderLoadingState();
   subscribeData();
 

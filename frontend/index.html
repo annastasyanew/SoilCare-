@@ -98,24 +98,23 @@
 
       <section class="dashboard-grid">
         <div class="dashboard-main">
-          <article class="panel">
+          <article class="panel dashboard-link-panel" data-section="grafik" role="link" tabindex="0" aria-label="Buka halaman Grafik">
             <div class="panel-header">
               <h2 class="panel-title has-icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i>Grafik Ringkas</h2>
-              <select aria-label="Periode grafik ringkas">
-                <option>24 Jam Terakhir</option>
-              </select>
+              <span class="panel-action">Lihat Grafik <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
             </div>
             <div class="chart-wrap">
               <canvas id="dashboardChart" aria-label="Grafik ringkas kelembapan tanah" role="img"></canvas>
             </div>
           </article>
 
-          <article class="panel">
+          <article class="panel dashboard-link-panel" data-section="riwayat" role="link" tabindex="0" aria-label="Buka halaman Riwayat">
             <div class="panel-header">
               <h2 class="panel-title has-icon"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>Riwayat Ringkas</h2>
+              <span class="panel-action">Lihat Riwayat <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
             </div>
             <div class="table-wrap">
-              <table>
+              <table class="dashboard-table">
                 <thead>
                   <tr>
                     <th>Waktu</th>
@@ -165,15 +164,6 @@
           <p>Berdasarkan data saat ini</p>
         </article>
 
-        <aside class="plant-card compact-plant">
-          <div class="plant-visual">
-            <img src="cabai.svg" alt="Ilustrasi tanaman cabai dalam pot">
-          </div>
-          <div>
-            <h2>Tanaman Cabai</h2>
-            <p>Kondisi tanaman berdasarkan data kelembapan tanah</p>
-          </div>
-        </aside>
       </section>
 
       <section class="monitoring-info-grid">
@@ -211,7 +201,7 @@
         <article class="panel">
           <h2 class="panel-title has-icon"><i class="fa-solid fa-table" aria-hidden="true"></i>Statistik Sensor</h2>
           <div class="table-wrap">
-            <table class="compact-table">
+            <table class="compact-table sensor-table">
               <thead>
                 <tr>
                   <th>Parameter</th>
@@ -228,14 +218,14 @@
           <h2 class="panel-title has-icon"><i class="fa-solid fa-microchip" aria-hidden="true"></i>Informasi Perangkat</h2>
           <div class="device-list">
             <div><span>ID Perangkat</span><strong data-field="device">--</strong></div>
-            <div><span>Status Perangkat</span><strong class="green-text">Aktif</strong></div>
-            <div><span>Koneksi</span><strong class="green-text">Terhubung</strong></div>
-            <div><span>Update Data</span><strong>1 menit</strong></div>
+            <div><span>Status Perangkat</span><strong id="deviceStatusText" class="muted-text">--</strong></div>
+            <div><span>Koneksi</span><strong id="deviceConnectionText" class="muted-text">--</strong></div>
+            <div><span>Update Data</span><strong id="deviceUpdateText" class="muted-text">--</strong></div>
           </div>
         </article>
 
         <article class="panel alert-panel" id="statusAlert">
-          <h2 class="panel-title has-icon"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>Peringatan</h2>
+          <h2 class="panel-title has-icon"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span id="alertHeadingText">Peringatan</span></h2>
           <strong id="alertTitle">--</strong>
           <p id="alertText">--</p>
         </article>
@@ -252,27 +242,18 @@
       </div>
 
       <section class="graph-summary">
-        <article class="metric-card">
-          <div class="card-icon water-icon">%</div>
-          <div>
-            <h2>Kelembapan Saat Ini</h2>
-            <strong data-field="humidity">--%</strong>
-          </div>
+        <article class="metric-card no-icon">
+          <h2>Kelembapan Saat Ini</h2>
+          <strong data-field="humidity">--%</strong>
         </article>
-        <article class="metric-card">
-          <div class="card-icon leaf-icon">^</div>
-          <div>
-            <h2>Rata-rata Kelembapan</h2>
-            <strong id="averageCard">--%</strong>
-          </div>
+        <article class="metric-card no-icon">
+          <h2>Rata-rata Kelembapan</h2>
+          <strong id="averageCard">--%</strong>
         </article>
-        <article class="metric-card status-card">
-          <div class="card-icon soil-icon">~</div>
-          <div>
-            <h2>Status Saat Ini</h2>
-            <strong data-field="status">--</strong>
-            <p id="statusHint">--</p>
-          </div>
+        <article class="metric-card status-card no-icon">
+          <h2>Status Saat Ini</h2>
+          <strong data-field="status">--</strong>
+          <p id="statusHint">--</p>
         </article>
       </section>
 
@@ -281,8 +262,14 @@
           <article class="panel">
             <div class="panel-header">
               <h2 class="panel-title has-icon"><i class="fa-solid fa-chart-area" aria-hidden="true"></i>Grafik Kelembapan Utama</h2>
-              <select aria-label="Periode grafik utama">
-                <option>24 Jam Terakhir</option>
+              <select id="graphRange" aria-label="Rentang data grafik utama">
+                <option value="all">Semua Data</option>
+                <option value="1h">1 Jam Terakhir</option>
+                <option value="6h">6 Jam Terakhir</option>
+                <option value="24h">24 Jam Terakhir</option>
+                <option value="today">Hari Ini</option>
+                <option value="7d">7 Hari Terakhir</option>
+                <option value="30d">30 Hari Terakhir</option>
               </select>
             </div>
             <div class="chart-wrap chart-wrap-large">
@@ -320,29 +307,20 @@
       </div>
 
       <section class="history-summary">
-        <article class="metric-card">
-          <div class="card-icon leaf-icon">#</div>
-          <div>
-            <h2>Total Data Riwayat</h2>
-            <strong id="totalData">--</strong>
-            <p>Data tercatat</p>
-          </div>
+        <article class="metric-card no-icon">
+          <h2>Total Data Riwayat</h2>
+          <strong id="totalData">--</strong>
+          <p>Data tercatat</p>
         </article>
-        <article class="metric-card">
-          <div class="card-icon water-icon">%</div>
-          <div>
-            <h2>Pembacaan Terakhir</h2>
-            <strong id="lastReading">--%</strong>
-            <p id="lastReadingTime">Hari ini, --</p>
-          </div>
+        <article class="metric-card no-icon">
+          <h2>Pembacaan Terakhir</h2>
+          <strong id="lastReading">--%</strong>
+          <p id="lastReadingTime">Hari ini, --</p>
         </article>
-        <article class="metric-card">
-          <div class="card-icon soil-icon">~</div>
-          <div>
-            <h2>Rata-rata Kelembapan</h2>
-            <strong id="historyAverage">--%</strong>
-            <p>Seluruh riwayat</p>
-          </div>
+        <article class="metric-card no-icon">
+          <h2>Rata-rata Kelembapan</h2>
+          <strong id="historyAverage">--%</strong>
+          <p>Seluruh riwayat</p>
         </article>
       </section>
 
@@ -391,6 +369,16 @@
                 <option>30 Hari Terakhir</option>
               </select>
             </label>
+            <div class="date-filter-grid">
+              <label>
+                Dari Tanggal
+                <input id="historyDateFrom" type="date" aria-label="Filter riwayat dari tanggal" />
+              </label>
+              <label>
+                Sampai Tanggal
+                <input id="historyDateTo" type="date" aria-label="Filter riwayat sampai tanggal" />
+              </label>
+            </div>
             <label>
               Status
               <select id="historyStatus">
