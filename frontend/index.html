@@ -6,7 +6,7 @@
   <title>SoilCare Cabai - Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -84,16 +84,6 @@
           <strong data-field="recommendation">--</strong>
           <p>Berdasarkan data saat ini</p>
         </article>
-
-        <aside class="plant-card">
-          <div class="plant-visual">
-            <img src="cabai.svg" alt="Ilustrasi tanaman cabai dalam pot">
-          </div>
-          <div>
-            <h2>Tanaman Cabai</h2>
-            <p>Kondisi tanaman berdasarkan data kelembapan tanah</p>
-          </div>
-        </aside>
       </section>
 
       <section class="dashboard-grid">
@@ -264,9 +254,6 @@
               <h2 class="panel-title has-icon"><i class="fa-solid fa-chart-area" aria-hidden="true"></i>Grafik Kelembapan Utama</h2>
               <select id="graphRange" aria-label="Rentang data grafik utama">
                 <option value="all">Semua Data</option>
-                <option value="1h">1 Jam Terakhir</option>
-                <option value="6h">6 Jam Terakhir</option>
-                <option value="24h">24 Jam Terakhir</option>
                 <option value="today">Hari Ini</option>
                 <option value="7d">7 Hari Terakhir</option>
                 <option value="30d">30 Hari Terakhir</option>
@@ -330,7 +317,7 @@
             <h2 class="panel-title has-icon"><i class="fa-solid fa-table-list" aria-hidden="true"></i>Tabel Riwayat Monitoring</h2>
           </div>
           <div class="table-wrap">
-            <table>
+            <table class="history-data-table">
               <thead>
                 <tr>
                   <th>Waktu</th>

@@ -162,9 +162,6 @@ function graphReadings() {
 
   const now = new Date();
   const rangeStart = {
-    "1h": now.getTime() - (60 * 60 * 1000),
-    "6h": now.getTime() - (6 * 60 * 60 * 1000),
-    "24h": now.getTime() - (24 * 60 * 60 * 1000),
     today: new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime(),
     "7d": now.getTime() - (7 * 24 * 60 * 60 * 1000),
     "30d": now.getTime() - (30 * 24 * 60 * 60 * 1000)
@@ -525,6 +522,12 @@ function renderLatest() {
   setById("alertTitle", currentInfo.title);
   setById("alertText", currentInfo.text);
   renderInsight();
+
+  const statusAlert = document.getElementById("statusAlert");
+  if (statusAlert) {
+    statusAlert.classList.remove("alert-dry", "alert-normal", "alert-wet");
+    statusAlert.classList.add(`alert-${currentStatusClass}`);
+  }
 
   document.querySelectorAll(".status-card, .recommendation-card").forEach((card) => {
     card.classList.remove("status-dry", "status-normal", "status-wet");
