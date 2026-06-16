@@ -30,12 +30,9 @@
       <a href="#riwayat" data-section="riwayat"><i class="fa-solid fa-history" aria-hidden="true"></i><span>Riwayat</span></a>
     </nav>
 
-    <div class="profile" aria-label="Profil pengguna">
-      <div class="profile-avatar">P</div>
-      <div>
-        <strong>Pengguna</strong>
-        <span>Pemilik Tanaman</span>
-      </div>
+    <div class="nav-status" aria-label="Status monitoring">
+      <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+      <span>Monitoring Aktif</span>
     </div>
   </header>
 
@@ -69,32 +66,23 @@
       </section>
 
       <section class="summary-grid">
-        <article class="metric-card">
-          <div class="card-icon water-icon">%</div>
-          <div>
-            <h2>Kelembapan Tanah</h2>
-            <strong data-field="humidity">--%</strong>
-            <p data-field="updated">Update terakhir: --</p>
-            <small data-field="adc">ADC: --</small>
-          </div>
+        <article class="metric-card dashboard-card">
+          <h2>Kelembapan Tanah</h2>
+          <strong data-field="humidity">--%</strong>
+          <p data-field="updated">Update terakhir: --</p>
+          <small data-field="adc">ADC: --</small>
         </article>
 
-        <article class="metric-card status-card">
-          <div class="card-icon soil-icon">~</div>
-          <div>
-            <h2>Status Tanah</h2>
-            <strong data-field="status">--</strong>
-            <p>Kondisi saat ini</p>
-          </div>
+        <article class="metric-card status-card dashboard-card">
+          <h2>Status Tanah</h2>
+          <strong data-field="status">--</strong>
+          <p>Kondisi saat ini</p>
         </article>
 
-        <article class="metric-card recommendation-card">
-          <div class="card-icon can-icon">+</div>
-          <div>
-            <h2>Rekomendasi</h2>
-            <strong data-field="recommendation">--</strong>
-            <p>Berdasarkan data saat ini</p>
-          </div>
+        <article class="metric-card recommendation-card dashboard-card">
+          <h2>Rekomendasi</h2>
+          <strong data-field="recommendation">--</strong>
+          <p>Berdasarkan data saat ini</p>
         </article>
 
         <aside class="plant-card">
@@ -143,7 +131,7 @@
         </div>
 
         <aside class="panel category-panel">
-          <h2>Kategori Kelembapan</h2>
+          <h2 class="panel-title has-icon"><i class="fa-solid fa-seedling" aria-hidden="true"></i>Kategori Kelembapan</h2>
           <div class="category-list" data-category-list></div>
         </aside>
       </section>
@@ -159,31 +147,22 @@
       </div>
 
       <section class="summary-grid monitoring-summary">
-        <article class="metric-card">
-          <div class="card-icon water-icon">%</div>
-          <div>
-            <h2>Kelembapan Tanah</h2>
-            <strong data-field="humidity">--%</strong>
-            <p data-field="updated">Update terakhir: --</p>
-          </div>
+        <article class="metric-card no-icon">
+          <h2>Kelembapan Tanah</h2>
+          <strong data-field="humidity">--%</strong>
+          <p data-field="updated">Update terakhir: --</p>
         </article>
 
-        <article class="metric-card status-card">
-          <div class="card-icon soil-icon">~</div>
-          <div>
-            <h2>Status Tanah</h2>
-            <strong data-field="status">--</strong>
-            <p>Kondisi saat ini</p>
-          </div>
+        <article class="metric-card status-card no-icon">
+          <h2>Status Tanah</h2>
+          <strong data-field="status">--</strong>
+          <p>Kondisi saat ini</p>
         </article>
 
-        <article class="metric-card recommendation-card">
-          <div class="card-icon can-icon">+</div>
-          <div>
-            <h2>Rekomendasi</h2>
-            <strong data-field="recommendation">--</strong>
-            <p>Berdasarkan data saat ini</p>
-          </div>
+        <article class="metric-card recommendation-card no-icon">
+          <h2>Rekomendasi</h2>
+          <strong data-field="recommendation">--</strong>
+          <p>Berdasarkan data saat ini</p>
         </article>
 
         <aside class="plant-card compact-plant">
@@ -208,14 +187,14 @@
           </div>
         </article>
         <article class="panel insight-panel">
-          <h2>Insight Kondisi Tanah</h2>
+          <h2 class="panel-title has-icon"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Interpretasi</h2>
           <p id="monitoringInsight">Kelembapan tanah saat ini akan membantu Anda mengambil keputusan penyiraman manual yang lebih akurat pada tanaman cabai.</p>
         </article>
       </section>
 
       <section class="monitoring-grid">
         <article class="panel gauge-panel">
-          <h2>Gauge Kelembapan</h2>
+          <h2 class="panel-title has-icon"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i>Gauge Kelembapan</h2>
           <div class="gauge" id="humidityGauge">
             <div class="gauge-inner">
               <strong data-field="humidity">--%</strong>
@@ -256,7 +235,7 @@
         </article>
 
         <article class="panel alert-panel" id="statusAlert">
-          <h2>Peringatan</h2>
+          <h2 class="panel-title has-icon"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>Peringatan</h2>
           <strong id="alertTitle">--</strong>
           <p id="alertText">--</p>
         </article>
@@ -301,7 +280,7 @@
         <div class="graph-main">
           <article class="panel">
             <div class="panel-header">
-              <h2>Grafik Kelembapan Utama</h2>
+              <h2 class="panel-title has-icon"><i class="fa-solid fa-chart-area" aria-hidden="true"></i>Grafik Kelembapan Utama</h2>
               <select aria-label="Periode grafik utama">
                 <option>24 Jam Terakhir</option>
               </select>
@@ -312,7 +291,7 @@
           </article>
 
           <article class="panel">
-            <h2 class="panel-title has-icon"><i class="fa-solid fa-chart-column" aria-hidden="true"></i>Ringkasan Grafik</h2>
+            <h2 class="panel-title has-icon"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i>Ringkasan Grafik</h2>
             <div class="summary-list" id="chartSummary"></div>
           </article>
         </div>
@@ -324,7 +303,7 @@
           </article>
 
           <article class="panel interpretation-panel">
-            <h2 class="panel-title has-icon"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i>Insight Kondisi Tanah</h2>
+            <h2 class="panel-title has-icon"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Interpretasi</h2>
             <ul id="interpretationList"></ul>
           </article>
         </aside>
@@ -370,7 +349,7 @@
       <section class="history-layout">
         <article class="panel history-table-panel">
           <div class="panel-header">
-            <h2>Tabel Riwayat Monitoring</h2>
+            <h2 class="panel-title has-icon"><i class="fa-solid fa-table-list" aria-hidden="true"></i>Tabel Riwayat Monitoring</h2>
           </div>
           <div class="table-wrap">
             <table>
@@ -398,7 +377,7 @@
 
         <aside class="history-side">
           <article class="panel filter-panel">
-            <h2>Filter Ringkas</h2>
+            <h2 class="panel-title has-icon"><i class="fa-solid fa-filter" aria-hidden="true"></i>Filter Ringkas</h2>
             <label>
               Cari
               <input id="historySearch" type="search" placeholder="Cari riwayat..." aria-label="Cari riwayat" />
@@ -428,7 +407,7 @@
           </article>
 
           <article class="panel">
-            <h2 class="panel-title has-icon"><i class="fa-solid fa-list-check" aria-hidden="true"></i>Ringkasan Riwayat</h2>
+            <h2 class="panel-title has-icon"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i>Ringkasan Riwayat</h2>
             <div class="summary-list compact-summary" id="historySummary"></div>
           </article>
         </aside>
@@ -446,7 +425,7 @@
     </div>
     <div class="footer-info">
       <span>Universitas Harapan Bangsa</span>
-      <span>Teknik Informatika</span>
+      <span>Informatika</span>
       <span>2026</span>
     </div>
   </footer>
