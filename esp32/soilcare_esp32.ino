@@ -12,14 +12,14 @@
 /********************************************************
  * FIREBASE REALTIME DATABASE
  ********************************************************/
-#define FIREBASE_HOST "https://soilcare-cabai-db941-default-rtdb.asia-southeast1.firebasedatabase.app"
+#define FIREBASE_HOST "*****************************"
 
 /********************************************************
  * TELEGRAM BOT
  * Ganti dengan token bot dan chat ID kamu.
  ********************************************************/
-#define BOT_TOKEN "8861240357:AAFIjr_HE7Fh6wwoj5bnDgsblSe5NE53KI0"
-#define CHAT_ID "6373703469"
+#define BOT_TOKEN "************************"
+#define CHAT_ID "************************"
 
 /********************************************************
  * SENSOR SOIL MOISTURE
